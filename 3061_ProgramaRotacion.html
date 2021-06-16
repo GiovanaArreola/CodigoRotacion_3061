@@ -1,0 +1,239 @@
+<html>
+  <head>
+      <!--Se importan las librerias de bootstrap para dar estilo a los componenetes-->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    </head>
+  <body>
+   <!--Dentro del body se crearan nuestros componenetes
+    Se crean un div que contiene la eqtiqueta h4, el boton y la caja de texto-->
+    <div clas="container">    
+        <h4>Ingrese el numero de coordenadas</h4>
+        <input class="txt" type= "number" id = "tamanio_matriz">
+        <button onclick="create_componets()">Enviar datos</button>
+    </div><br>
+    <!--Hacemos uso de bootstrap mediante los div-->
+    <div class="row">
+        <div class="col-3">
+            <!--Este div solo tendra los inputs que sera utilizados para la matriz de 3x3-->
+            <div>
+                <!--Solo se habilitaran 4 que son los valores que cambian-->
+                <input class = "imput_mtsr get_values" type = number id = "0"> 
+                <input class = "imput_mtsr get_values" type = number id = "1">
+                <input class = "imput_mtsr " value = "0" disabled = "true"><br><br>
+                <input class = "imput_mtsr get_values" type = number id = "3">
+                <input class = "imput_mtsr get_values" type = number id = "4">
+                <input class = "imput_mtsr" value = "0" disabled = "true"><br><br>
+                <input class = "imput_mtsr" value = "0" disabled = "true"> <!--Para que no se puedan modificar usamos el "disabled"-->
+                <input class = "imput_mtsr" value = "0" disabled = "true">
+                <input class = "imput_mtsr" value = "1" disabled = "true"><br><br>
+            </div>
+            
+            <br><br>
+        </div>
+        <div class="col-7">
+            <!--Dentro de este div se tendra la etiqueta h4 y otro contenedor-->
+            <div aling = "center">
+                <h4> Ingrese los valores de la matriz </h4><br> 
+                <!--Dentro de este contenedor van los componenetes de la matriz 3xn-->
+                <div id= "mtrz_create_components">
+                </div>
+            </div>
+        </div><br>
+    </div>
+    <!--Este es nuestro boton de calcular coordenadas-->
+    <button onclick="create_and_insert_mtrz()"> Calcular cordenadas </button><br><br><br>
+    <!--Aqui estaremos almacenando un div dentro de otro div-->
+    <div id="div_hide_show"> 
+        <!--En este div tendremos los div donde se muestra la matriz resultante y el div de las coordenadas-->
+        <div class = "row">
+          <!--  <div id = "div_result" class="col-1">
+            </div><br><br>-->
+            <div id = "div_matrz" class="col-7">
+            <h4>Matriz resultante</h4><br>
+            </div><br><br>
+            <div id ="cordenadas" class="col-2">
+                <h4>Cordenadas</h4><br>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
+
+<script>
+    //Se crea el metodo crear componenetes 
+    function create_componets(){
+        var tamanio = document.getElementById("tamanio_matriz").value;
+        var contenedor = document.getElementById("mtrz_create_components");
+        var inputs;
+        var contador = 0;
+        //con este ciclo creamos la matriz de 3xn de acuerdo a las coordenadas que se ingrese por el usuario    
+        for (var i = 0; i < 3; i++){ 
+            for (var o = 0; o < tamanio; o++){
+                inputs = document.createElement("input");
+                inputs.id = "pos_mtrz" + contador;
+                inputs.className = "mtrz_3xn"; 
+                contenedor.appendChild(inputs);
+                contador ++;    
+            }   
+            inputs = document.createElement("br");
+            contenedor.appendChild(inputs);
+        }
+    }
+
+    //Se crea el metodo crear e insertar matriz
+    function create_and_insert_mtrz(){
+        var tamanio = document.getElementById("tamanio_matriz").value; //El value es para obetner el dato que esta dentro del caja de tamaño
+        var imp = 0;  
+        var i;
+        var u = 0;
+        var contenedor;
+        var componentes;
+        var cadena ;
+        /*Crear matriz de 3 x3 */ 
+        var mtrz_3x3= new Array(2); //Se declara un arreglo dentro de otro arreglo para formar una matriz bidimensional en este caso de 3x3
+        for ( i = 0; i <= 2; i++) {
+            mtrz_3x3[i] = new Array(2);
+        }
+        /* Se crea la matriz 3 * N */
+        var matrz= new Array(2); //0, 1, 2
+        for ( i = 0; i <= 2; i++) {
+            matrz[i] = new Array(tamanio);//Crea la matriz de acuerdo al numero que sea ingresado por el usuario
+        }
+        var components = document.getElementsByClassName("get_values");//Obtenemos los datos que se agregaron a la matrix de 3x3
+        
+        /*llenado de la matriz por los datos del usuario 
+        Usamos este cilo para solo llenar los 4 elementos que faltan de la matriz de 3x3*/
+        for(var o = 0; o <= 1; o++){
+            for(var p = 0 ; p <= 1; p++){
+                mtrz_3x3[o][p]= components[u].value;
+                u ++;
+            }       
+        }
+        /*mtrz_3x3[0][0]= components[0].value; 
+        mtrz_3x3[0][1]= components[1].value; 
+        mtrz_3x3[1][0]= components[2].value; 
+        mtrz_3x3[1][1]= components[3].value; */
+        /*Datos formulas 
+        estos son los datos que no cambian dentro de la matriz de 3x3*/
+        mtrz_3x3[0][2]= "0"; 
+        mtrz_3x3[1][2]= "0"; 
+        mtrz_3x3[2][0]= "0"; 
+        mtrz_3x3[2][1]= "0"; 
+        mtrz_3x3[2][2]= "1";
+        mtrz_3x3[0][1]= mtrz_3x3[0][1] * -1 ; 
+        components =  document.getElementsByClassName("mtrz_3xn");
+        u = 0;
+        /*Llenamos la matriz de 3xn
+        recordando que en el primer ciclo se recorren las filas y el segundo las columnas*/
+        for(var p = 0 ; p < 3; p++){
+            cadena = "";
+            for(var o = 0; o < tamanio ; o++){
+                matrz[p][o]= components[u].value;
+                u ++;
+            }      
+        }
+        calcule_points(mtrz_3x3, matrz, tamanio); 
+    }
+
+    //Creamos el metodo que hara la multiplicacion de las matrices, pasandole unos parametros 
+    function calcule_points(mtrz3x3, mtrz3xn, tamanio){
+        var o = 0;
+        var value1, value2, i, j, operaciones, texto, contenedor;
+        //Creamos otra matriz que alamacenara la matriz resultante
+        var matrz= new Array(2);//0, 1, 2
+        for ( i = 0; i <= 2; i++) {
+            matrz[i] = new Array(tamanio);// Crea la matriz
+        }
+        //Realizamos las operaciones de las matrices   
+        for (i = 0; i< tamanio; i++){  /*Primer ciclo recorre la matriz 3xn*/
+            operaciones = 0;
+            for (j  = 0; j < 3; j++){/*Segundo ciclo recorre la matriz 3 *3 */
+                for(var p = 0; p <= 2; p++){ /*Tercer ciclo realiza la multiplicacion de las dos matrices*/
+                    value1 = mtrz3x3[j][p];
+                    value2 = mtrz3xn[p][i]; 
+                    operaciones = operaciones + (value1 * value2);  
+                }
+                //Almacena los valores en la matriz que se creo 
+                matrz[j][i] = operaciones;
+                operaciones = 0;
+            }
+        } 
+        /**
+        * Imprimir los resultados en pantalla mediante una matriz 
+        **/
+        for (var i = 0; i <= 2 ; i++){ 
+            for (var o = 0; o < tamanio; o++){
+                contenedor = document.getElementById("div_matrz");
+                componentes = document.createElement("input");
+                componentes.value =  matrz[i][o];
+                componentes.className = "imput_mtsr1"; 
+                componentes.disabled = true;
+                contenedor.appendChild(componentes);   
+            }   
+            componentes = document.createElement("br");
+            contenedor.appendChild(componentes);
+        }
+        //Imprimimos los puntos en una matriz ya de las coordenadas
+        var puntos;
+        for (var i = 0; i < tamanio  ; i++){ //Primer arreglo recorre ahora las columnas
+            puntos = "";
+            for (var o = 0; o <= 1; o++){ //Segundo arreglo recoore las filas
+                puntos = puntos  + matrz[o][i] + ', ';
+                }
+                contenedor = document.getElementById("cordenadas");
+                componentes = document.createElement("input");
+                componentes.value = "P" + (i+1)  + ' :' + puntos;
+                componentes.disabled = true;
+                componentes.className = "imput_mtsr2"; 
+                contenedor.appendChild(componentes);   
+                componentes = document.createElement("br");
+                contenedor.appendChild(componentes); 
+            }
+        document.getElementById("div_hide_show").style.display = "block";
+    }
+
+</script>
+<!--Se agregan los estilos mediante CSS-->
+<style>
+    /**Las clases empiezan con un punto
+    *Solo damos el estilo a las matriz de 3x3, 3xn y matriz resultante*/
+    .imput_mtsr, .imput_mtsr1, .mtrz_3xn{
+        background: #4E3620;
+        color: #E4D3CF;
+        font-style: italic;
+        font-weight: bold;
+        height: 25px;
+        width: 60px;
+    }
+    /*Damos el estilo a la matriz donde se muestran los puntos de las coordenadas*/
+    .imput_mtsr2{
+        background: #C06014;
+        color: white;
+        height: 25px;
+        width: 200px;
+    }
+    /*solo le estamos dando estilo mediante etiquetas*/
+    body{
+       background: #206A5D;
+        margin-top: 30px;
+        margin-left: 30px;
+    }
+    /*Damos el estilo mediante el id por lo tanto se pone # */
+    #div_hide_show{
+        display: none;
+    }
+    button{
+        background: #81B214;
+        color: white;
+        height: 40px;
+        width: 250px;
+    }
+    h4{
+        font-family:candara;
+        color : #FFC93C;
+        font-weight: bold;
+    }
+</style>
